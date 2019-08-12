@@ -1,0 +1,5 @@
+abcd etlinffmd The eXpOS package that you had downloaded in the previous stage consists mainly of a machine simulator. The machine is called the eXperimental String Machine (XSM) and consists of a processor, memory and disk. Some support tools that help you to program the machine are also provided.
+
+One important point to note about the system is that the machine is a bare, and comes with no software in it (except for a boot ROM). Hence, the only way to insert some software code into the system is to prepare the code "outside" (that is, in your Linux/Unix system) and insert your code into the machine. The support tools provided along with the package are precisely designed to help you with this task.
+
+The package comes with three major support tools - two compilers and a disk interface tool called XFS-Interface. The compilers allow you to write high level code and translate it into the XSM machine code. We will look at them in later stages. The XFS-Inteface tool helps you to transfer files between your Linux/Unix system and the XSM machines disk.
