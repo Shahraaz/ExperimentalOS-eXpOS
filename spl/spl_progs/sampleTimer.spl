@@ -1,2 +1,12 @@
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13] = SP;
+SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 11] * 512 - 1;
+backup;
+alias pid R0;
+pid = [SYSTEM_STATUS_TABLE + 1];
+print pid;
+pid = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16 + 2)]*512 - 1;
+print pid;
 print "TIMER";
+restore;
+SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13];
 ireturn;

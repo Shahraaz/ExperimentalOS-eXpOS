@@ -38,6 +38,10 @@ PTLR = 10;
 [PTBR + 18] = 77;
 [PTBR + 19] = "0110";
 
+[PROCESS_TABLE + 11] = 80;
+[PROCESS_TABLE + 1] = 0;
+[SYSTEM_STATUS_TABLE + 1] = 0;
+
 SP = 8*512;
 [76*512] = [65*512 + 1];
 ireturn;
