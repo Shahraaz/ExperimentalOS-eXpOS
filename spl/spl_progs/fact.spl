@@ -1,0 +1,9 @@
+alias fact R0;
+fact = 1;
+alias ctr R1;
+ctr = 1;
+while(ctr <= 5) do
+	fact = fact*ctr;
+	ctr = ctr + 1;
+endwhile;
+print fact;

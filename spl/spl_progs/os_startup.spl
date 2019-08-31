@@ -3,6 +3,8 @@ loadi(5,18);
 
 loadi(63,13);
 loadi(64,14);
+loadi(16,29);
+loadi(17,30);
 
 loadi(65,7);
 loadi(66,8);
