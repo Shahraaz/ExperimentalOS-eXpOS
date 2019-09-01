@@ -1,0 +1,14 @@
+int main()
+{
+decl
+	int a,temp;
+	str pp;
+enddecl
+begin
+	pp = "IDLE";
+	while(1==1) do
+		a = exposcall("Write",-2,pp);
+	endwhile;
+	return 0;
+end
+}

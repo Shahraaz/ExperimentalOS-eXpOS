@@ -1,0 +1,34 @@
+type
+student
+{
+	str name;
+	int marks;
+}
+endtype
+int main()
+{
+decl
+	int temp,num;
+	student John;
+enddecl
+begin
+	num = 1;
+	temp = exposcall("Write",-2,"start");
+	while ( num<= 50) do
+		temp = num%2;
+		if (temp == 1) then
+			temp = exposcall("Write",-2,num);
+		endif;	
+		num = num + 1;
+		temp = exposcall("Write",-2,"In the Middle");
+	endwhile;	
+	temp = initialize();
+	John = alloc();
+	John.name = "John";
+	John.marks = 0;
+	temp = exposcall("Write",-2,"Name");
+	temp = exposcall("Write",-2,John.name);
+	temp = exposcall("Write",-2,John.marks);
+	return 0;
+end
+}
