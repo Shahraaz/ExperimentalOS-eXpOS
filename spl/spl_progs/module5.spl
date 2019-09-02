@@ -1,0 +1,44 @@
+//Scheduler
+print "Scheduler";
+alias pid R0;
+pid = [SYSTEM_STATUS_TABLE + 1];
+multipush(BP);
+
+[PROCESS_TABLE + pid*16 + 12] = SP%512;
+[PROCESS_TABLE + pid*16 + 14] = PTBR;
+[PROCESS_TABLE + pid*16 + 15] = PTLR;
+alias newPid R1;
+newPid = 0;
+pid = pid + 1;
+if( pid > 15)	then
+	pid = 0;
+endif;
+alias State R2;
+while(pid < 16) do
+	State = [PROCESS_TABLE + (pid*16) + 4];
+	print pid;
+	if(([PROCESS_TABLE + (pid*16) + 4 ]==READY) || ([PROCESS_TABLE + (pid*16) + 4]==CREATED)) then
+		newPid = pid;
+		break;
+	endif;
+	pid = pid + 1;
+	if(pid > 15) then
+		pid = 0;
+	endif;
+endwhile;
+print newPid;
+
+SP = [PROCESS_TABLE + (newPid*16) + 11]*512 + [PROCESS_TABLE + (newPid*16) + 12];
+PTBR = [PROCESS_TABLE + (newPid*16) + 14];
+PTLR = [PROCESS_TABLE + (newPid*16) + 15];
+[SYSTEM_STATUS_TABLE+1] = newPid;
+
+if([PROCESS_TABLE + (newPid*16) + 4]==CREATED) then
+	SP = [PROCESS_TABLE +(newPid*16) + 13];
+	[PROCESS_TABLE + (newPid*16) + 4] = RUNNING;
+	[PROCESS_TABLE + (newPid*16) + 9] = 0;
+	ireturn; 
+endif;
+[PROCESS_TABLE + (newPid*16) + 4] = RUNNING;
+multipop(BP);
+return;

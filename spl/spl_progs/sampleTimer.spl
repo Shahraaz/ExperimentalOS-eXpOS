@@ -1,28 +1,26 @@
 [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13] = SP;
 SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 11] * 512 - 1;
 backup;
+
 alias pid R0;
 pid = [SYSTEM_STATUS_TABLE + 1];
 print "TIMER";
 print pid;
 alias processTableEntry R1;
 processTableEntry = PROCESS_TABLE + pid*16;
-[processTableEntry + 12] = SP%512;
-[processTableEntry + 14] = PTBR;
-[processTableEntry + 15] = PTLR;
 [processTableEntry + 4] = READY;
-pid = 1 - pid;
-processTableEntry = PROCESS_TABLE + pid*16;
-SP = [processTableEntry + 11] * 512 + [processTableEntry + 12];
-PTBR = [processTableEntry + 14];
-PTLR = [processTableEntry + 15];
-[SYSTEM_STATUS_TABLE + 1] = pid;
-if([processTableEntry + 4] == CREATED) then
-	[processTableEntry + 4] = RUNNING;
-	SP = [processTableEntry + 13];
-	ireturn;
-endif; 
-[processTableEntry + 4] = RUNNING;
+
+alias i R2;
+i = 0;
+while(i<16) do
+	if([PROCESS_TABLE + (i*16) + 4]!=TERMINATED) then
+		[PROCESS_TABLE + (i*16)] = [PROCESS_TABLE + (i*16)] +1;
+	endif;
+	i = i + 1;
+endwhile;
+
+call MOD_5;
+
 restore;
 SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13];
 ireturn;

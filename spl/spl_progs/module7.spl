@@ -1,3 +1,9 @@
+//Inter Service
+//Scheduler Load
+//Module 5
+loadi(50,63);
+loadi(51,64);
+
 // Timer int load
 loadi(4,17);
 loadi(5,18);
@@ -62,5 +68,58 @@ PTLR = 10;
 [PROCESS_TABLE + 16 + 14] = PAGE_TABLE_BASE + 20;
 [PROCESS_TABLE + 16 + 15] = 10;
 [76*512] = [69*512+1];
+
+//Load Exec ie Even
+loadi(85,69);
+loadi(86,70);
+
+PTBR = PTBR + 20;
+
+//Library Code
+[PTBR] = 63;
+[PTBR+1] = "0100";
+[PTBR+2] = 64;
+[PTBR+3] = "0100";
+
+//Exec HEAP
+[PTBR+4] = 83;
+[PTBR+5] = "0110";
+[PTBR+6] = 84;
+[PTBR+7] = "0110";
+
+//Exec User Code
+[PTBR+8] = 85;
+[PTBR+9] = "0110";
+[PTBR+10] = 86;
+[PTBR+11] = "0110";
+[PTBR+12] = -1;
+[PTBR+13] = "0000";
+[PTBR+14] = -1;
+[PTBR+15] = "0000";
+
+//Exec Stack
+[PTBR+16] = 86;
+[PTBR+17] = "0110";
+[PTBR+18] = 87;
+[PTBR+19] = "0110";
+
+//Process table set up for Exec Process
+[PROCESS_TABLE + 32 + 1] = 2;
+[PROCESS_TABLE + 32 + 4] = CREATED;
+[PROCESS_TABLE + 32 + 11] = 89;
+[PROCESS_TABLE + 32 + 13] = 8*512;
+[PROCESS_TABLE + 32 + 12] = 0;
+[PROCESS_TABLE + 32 + 14] = PAGE_TABLE_BASE + 40;
+[PROCESS_TABLE + 32 + 15] = 10; 
+[86*512] = [85*512+1];
+
+PTBR = PAGE_TABLE_BASE;
+
+alias i R0;
+i = 3;
+while(i<16) do
+	[PROCESS_TABLE + (i*16) + 4] = TERMINATED;
+	i = i + 1;
+endwhile;
 
 return;

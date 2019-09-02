@@ -1,0 +1,19 @@
+int main()
+{
+decl
+	int temp,num;
+enddecl
+begin
+	num = 1;
+	temp = exposcall("Write",-2,"startEven");
+	while ( num<= 50) do
+		temp = num%2;
+		if (temp == 0) then
+			temp = exposcall("Write",-2,num);
+		endif;	
+		num = num + 1;
+		temp = exposcall("Write",-2,"Even");
+	endwhile;
+	return 0;
+end
+}
