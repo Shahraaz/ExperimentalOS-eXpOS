@@ -1,63 +1,17 @@
-// Timeri
-loadi(4,17);
-loadi(5,18);
+//Bootmodule Load
+loadi(54,67);
+loadi(55,68);
 
-// load Library
-loadi(63,13);
-loadi(64,14);
-
-// Load int 7
-loadi(16,29);
-loadi(17,30);
-
-//Load idle Program
+//Idle Load
 loadi(69,11);
 loadi(70,12);
 
-//Load init Program
-loadi(65,7);
-loadi(66,8);
+//Set up sp at user stack of IDLE process
+SP = 82*512 - 1;
 
-//Load int 10
-loadi(22,35);
-loadi(23,36);
-
-// Load exception Handler
-loadi(2,15);
-loadi(3,16);
+call BOOT_MODULE;
 
 PTBR = PAGE_TABLE_BASE;
-PTLR = 10;
-
-//Library Common
-[PTBR] = 63;
-[PTBR + 1] = "0100";
-[PTBR + 2] = 64;
-[PTBR + 3] = "0100";
-
-//Idle Heap
-[PTBR + 4] = -1;
-[PTBR + 5] = "0000";
-[PTBR + 6] = -1;
-[PTBR + 7] = "0000";
-
-//Idle Code
-[PTBR + 8] = 69;
-[PTBR + 9] = "0100";
-[PTBR + 10] = 70;
-[PTBR + 11] = "0100";
-[PTBR + 12] = -1;
-[PTBR + 13] = "0000";
-[PTBR + 14] = -1;
-[PTBR + 15] = "0000";
-
-//Idle Stack
-[PTBR + 16] = 81;
-[PTBR + 17] = "0110";
-[PTBR + 18] = -1;
-[PTBR + 19] = "0110";
-
-PTBR = PAGE_TABLE_BASE + 20;
 PTLR = 10;
 
 //Library Common
@@ -66,32 +20,31 @@ PTLR = 10;
 [PTBR+2] = 64;
 [PTBR+3] = "0100";
 
-//Init Heap
-[PTBR+4] = 78;
-[PTBR+5] = "0110";
-[PTBR+6] = 79;
-[PTBR+7] = "0110";
+//Idle Heap
+[PTBR+4] = -1;
+[PTBR+5] = "0000";
+[PTBR+6] = -1;
+[PTBR+7] = "0000";
 
-//Init Code
-[PTBR+8] = 65;
+//Idle Code
+[PTBR+8] = 69;
 [PTBR+9] = "0100";
-[PTBR+10] = 66;
+[PTBR+10] = 70;
 [PTBR+11] = "0100";
 [PTBR+12] = -1;
 [PTBR+13] = "0000";
 [PTBR+14] = -1;
 [PTBR+15] = "0000";
 
-//Init Stack
-[PTBR+16] = 76;
+//Idle Stack
+[PTBR+16] = 81;
 [PTBR+17] = "0110";
-[PTBR+18] = 77;
+[PTBR+18] = -1;
 [PTBR+19] = "0110";
 
-PTBR = PTBR - 20;
 //Process table set up for idle process
 [PROCESS_TABLE + 1] = 0;
-[PROCESS_TABLE + 4] = CREATED;
+[PROCESS_TABLE + 4] = RUNNING;
 [PROCESS_TABLE + 11] = 82;
 [PROCESS_TABLE + 13] = 8*512;
 [PROCESS_TABLE + 12] = 0;
@@ -99,19 +52,8 @@ PTBR = PTBR - 20;
 [PROCESS_TABLE + 15] = 10;
 [81*512] = [69*512+1];
 
-//Process table set up for iNIT process
-[PROCESS_TABLE + 16 + 1] = 1;
-[PROCESS_TABLE + 16 + 4] = RUNNING;
-[PROCESS_TABLE + 16 + 11] = 80;
-[PROCESS_TABLE + 16 + 13] = 8*512;
-[PROCESS_TABLE + 16 + 12] = 0;
-[PROCESS_TABLE + 16 + 14] = PAGE_TABLE_BASE + 20;
-[PROCESS_TABLE + 16 + 15] = 10;
-[76*512] = [69*512+1];
- 
-PTBR = PTBR + 20;
 PTLR = 10;
 SP = 8*512;
 
-[SYSTEM_STATUS_TABLE + 1] = 1;
+[SYSTEM_STATUS_TABLE + 1] = 0;
 ireturn;

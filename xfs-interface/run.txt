@@ -1,5 +1,6 @@
 load --init $HOME/myexpos/expl/expl_progs/samples.xsm
 load --exhandler $HOME/myexpos/spl/spl_progs/haltprog.xsm
+load --module 7 $HOME/myexpos/spl/spl_progs/module7.xsm
 load --library $HOME/myexpos/expl/library.lib
 load --idle $HOME/myexpos/expl/expl_progs/idle.xsm
 load --int=timer $HOME/myexpos/spl/spl_progs/sampleTimer.xsm

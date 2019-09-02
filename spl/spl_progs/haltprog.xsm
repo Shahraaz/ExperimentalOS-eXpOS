@@ -1,2 +1,5 @@
+MOV R16, "Halt"
+PORT P1, R16
+OUT
 HALT
 HALT
