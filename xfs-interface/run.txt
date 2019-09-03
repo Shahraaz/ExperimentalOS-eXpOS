@@ -4,6 +4,8 @@ load --exhandler $HOME/myexpos/spl/spl_progs/haltprog.xsm
 load --module 7 $HOME/myexpos/spl/spl_progs/module7.xsm
 load --module 5 $HOME/myexpos/spl/spl_progs/module5.xsm
 load --library $HOME/myexpos/expl/library.lib
+load --library $HOME/myexpos/spl/spl_progs/sampleLib.xsm
+load --library $HOME/myexpos/expl/library.lib
 load --idle $HOME/myexpos/expl/expl_progs/idle.xsm
 load --int=timer $HOME/myexpos/spl/spl_progs/sampleTimer.xsm
 load --int=7 $HOME/myexpos/spl/spl_progs/int7.xsm
