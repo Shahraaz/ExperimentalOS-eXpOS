@@ -7,7 +7,7 @@ enddecl
 begin
 	pp = "IDLE";
 	while(1==1) do
-		a = exposcall("Write",-2,pp);
+		a = 1;
 	endwhile;
 	return 0;
 end

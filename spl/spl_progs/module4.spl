@@ -15,4 +15,19 @@ if(funcNum == 3) then
 	restore;
 	return;
 endif;
+
+if(funcNum == 4) then
+	backup;
+	R1 = 8;
+	R2 = [SYSTEM_STATUS_TABLE + 1];
+	call MOD_0;
+	restore;
+	read;
+	[PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1]*16 + 4] = WAIT_TERMINAL;
+	backup;
+	call MOD_5;
+	restore;
+	[[PTBR + 2*(R3/512)]*512 + ((R3)%512)] = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1] * 16) + 8];
+	return;
+endif;
 return;

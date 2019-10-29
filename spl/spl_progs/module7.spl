@@ -21,6 +21,10 @@ loadi(5,18);
 loadi(63,13);
 loadi(64,14);
 
+//Load int 6
+loadi(14,27);
+loadi(15,28);
+
 // Load int 7
 loadi(16,29);
 loadi(17,30);
@@ -36,6 +40,10 @@ loadi(23,36);
 // Load exception Handler
 loadi(2,15);
 loadi(3,16);
+
+//Load console Interrupt
+loadi(8,21);
+loadi(9,22);
 
 PTBR = PAGE_TABLE_BASE + 20;
 PTLR = 10;

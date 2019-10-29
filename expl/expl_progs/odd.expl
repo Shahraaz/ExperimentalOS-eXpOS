@@ -4,7 +4,7 @@ decl
 	int temp,num;
 enddecl
 begin
-	num = 1;
+	num = 100;
 	temp = exposcall("Write",-2,"startOdd");
 	while ( num<= 50) do
 		temp = num%2;

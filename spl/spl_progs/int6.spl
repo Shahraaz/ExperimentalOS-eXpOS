@@ -1,0 +1,35 @@
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 9] = 7;
+
+alias userSp R0;
+userSp = SP;
+
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13] = SP;
+SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 11] * 512 - 1;
+
+alias physical_page R1;
+alias offset R2;
+alias file_descriptor R3;
+
+physical_page = [PTBR + 2*((userSp - 4)/512)];
+offset = (userSp - 4)%512;
+file_descriptor = [physical_page *512 + offset];
+if(file_descriptor != -1) then
+	[[PTBR + 2*((userSp-1)/512)]*512 + ((userSp-1)%512)] = -1;
+else
+	alias content_addr R4;
+	physical_page = [PTBR + 2*((userSp - 3)/512)];
+	offset = (userSp - 3)%512;
+	content_addr = [physical_page*512 + offset];
+	backup;
+	R1 = 4;
+	R2 = [SYSTEM_STATUS_TABLE + 1];
+	R3 = content_addr;
+	call MOD_4;
+	restore;
+	[[PTBR + 2*((userSp-1)/512)]*512 + ((userSp-1)%512)] = 0;
+endif;
+
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 9] = 0;
+SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13];
+
+ireturn;

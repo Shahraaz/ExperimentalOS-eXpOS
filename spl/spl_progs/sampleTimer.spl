@@ -1,15 +1,11 @@
 [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13] = SP;
 SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 11] * 512 - 1;
 backup;
-
 alias pid R0;
 pid = [SYSTEM_STATUS_TABLE + 1];
-print "TIMER";
-print pid;
 alias processTableEntry R1;
 processTableEntry = PROCESS_TABLE + pid*16;
 [processTableEntry + 4] = READY;
-
 alias i R2;
 i = 0;
 while(i<16) do
