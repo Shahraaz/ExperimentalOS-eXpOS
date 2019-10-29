@@ -1,5 +1,14 @@
 //Inter Service
 //Scheduler Load
+
+//Module0
+loadi(40,53);
+loadi(41,54);
+
+//module 4
+loadi(48,61);
+loadi(49,62);
+
 //Module 5
 loadi(50,63);
 loadi(51,64);

@@ -1,13 +1,19 @@
 [PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1]*16 + 9] = 5;
+
 alias userSp R0;
 userSp = SP;
+
 [PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1]*16 + 13] = SP;
 SP = [PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1]*16 + 11]*512 - 1;
+
 alias physicalPageNumber R1;
 alias offset R2;
 alias fileDescPhysicalAddr R3;
+
 physicalPageNumber = [PTBR + 2*((userSp - 4)/512)];
 offset = (userSp - 4)%512;
+
+
 fileDescPhysicalAddr = (physicalPageNumber * 512) + offset;
 alias fileDescriptor R4;
 fileDescriptor = [fileDescPhysicalAddr];
@@ -17,7 +23,13 @@ then
 	[R5] = -1;
 else
 	R5 = [[PTBR + 2*(userSp -3)/512]*512 + (userSp - 3)%512];
-	print R5;
+	breakpoint;
+	backup;
+	R1 = 3;
+	R2 = [SYSTEM_STATUS_TABLE + 1];
+	R3 = R5;
+	call MOD_4;
+	restore;
 	R5 = [PTBR + 2*((userSp - 1)/512)]*512 + (userSp - 1)%512;
 	[R5] = 0;
 endif;

@@ -16,7 +16,6 @@ endif;
 alias State R2;
 while(pid < 16) do
 	State = [PROCESS_TABLE + (pid*16) + 4];
-	print pid;
 	if(([PROCESS_TABLE + (pid*16) + 4 ]==READY) || ([PROCESS_TABLE + (pid*16) + 4]==CREATED)) then
 		newPid = pid;
 		break;

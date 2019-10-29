@@ -1,0 +1,18 @@
+alias funcNum R1;
+alias curPid R2;
+
+if(funcNum == 3) then
+	backup;
+	R1 = 8;
+	R2 = [SYSTEM_STATUS_TABLE + 1];
+	call MOD_0;
+	restore;
+	print R3;
+	backup;
+	R1 = 9;
+	R2 = [SYSTEM_STATUS_TABLE + 1];
+	call MOD_0;
+	restore;
+	return;
+endif;
+return;
