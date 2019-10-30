@@ -1,4 +1,5 @@
 print "Halt";
+print [SYSTEM_STATUS_TABLE+1];
 [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 4] = TERMINATED;
 SP = [PROCESS_TABLE +([SYSTEM_STATUS_TABLE + 1]*16 ) + 11 ] *512 - 1;
 alias flag R0;

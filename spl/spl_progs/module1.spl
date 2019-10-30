@@ -1,0 +1,53 @@
+alias funcNum R1;
+alias currPid R2;
+
+if( funcNum == FREE_USER_AREA_PAGE) then
+	backup;
+	R1 = RELEASE_PAGE;
+	R2 = [PROCESS_TABLE + (currPid * 16) + 11];
+	call MOD_2;
+	restore;
+	return;
+endif;
+
+if(funcNum == EXIT_PROCESS) then
+	backup;
+	R1 = FREE_PAGE_TABLE;
+	R2 = currPid;
+	call MOD_1;
+	restore;
+
+	backup;
+	R1 = FREE_USER_AREA_PAGE;
+	R2 = currPid;
+	call MOD_1;
+	restore;
+	
+	[PROCESS_TABLE + (currPid*16) + 4] = TERMINATED;
+	return;
+endif;
+
+if(funcNum == FREE_PAGE_TABLE) then
+	alias temp R4;
+	PTBR = PAGE_TABLE_BASE + currPid*20;
+	[PTBR + 0] = -1;
+	[PTBR + 1] = "0000";
+	[PTBR + 2] = -1;
+	[PTBR + 3] = "0000";
+	temp = 4;
+	while( temp < 20) do
+		if([PTBR + temp] != -1) then
+			backup;
+			R1 = RELEASE_PAGE;
+			R2 = currPid;
+			call MOD_2;
+			restore;
+			[PTBR + temp] = -1;
+			[PTBR + temp + 1] = "0000";
+		endif;
+		temp = temp + 2;
+	endwhile;
+	return;
+endif;
+
+return;
