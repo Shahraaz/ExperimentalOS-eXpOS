@@ -1,6 +1,6 @@
 fdisk
-load --init $HOME/myexpos/expl/expl_progs/gcd.xsm
-load --exec $HOME/myexpos/expl/expl_progs/odd.xsm
+load --init $HOME/myexpos/expl/expl_progs/shell.xsm
+load --exec $HOME/myexpos/expl/expl_progs/gcd.xsm
 load --exhandler $HOME/myexpos/spl/spl_progs/haltprog.xsm
 load --library $HOME/myexpos/expl/library.lib
 load --idle $HOME/myexpos/expl/expl_progs/idle.xsm
@@ -8,9 +8,12 @@ load --int=timer $HOME/myexpos/spl/spl_progs/sampleTimer.xsm
 load --int=console $HOME/myexpos/spl/spl_progs/console_interrupt.xsm
 load --int=6 $HOME/myexpos/spl/spl_progs/int6.xsm
 load --int=7 $HOME/myexpos/spl/spl_progs/int7.xsm
+load --int=9 $HOME/myexpos/spl/spl_progs/int9.xsm
 load --int=10 $HOME/myexpos/spl/spl_progs/int10.xsm
 load --os $HOME/myexpos/spl/spl_progs/os_startup.xsm
 load --module 0 $HOME/myexpos/spl/spl_progs/module0.xsm
+load --module 1 $HOME/myexpos/spl/spl_progs/module1.xsm
+load --module 2 $HOME/myexpos/spl/spl_progs/module2.xsm
 load --module 4 $HOME/myexpos/spl/spl_progs/module4.xsm
 load --module 5 $HOME/myexpos/spl/spl_progs/module5.xsm
 load --module 7 $HOME/myexpos/spl/spl_progs/module7.xsm 
