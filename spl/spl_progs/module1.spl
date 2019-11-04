@@ -1,7 +1,7 @@
 alias funcNum R1;
 alias currPid R2;
 
-if( funcNum == FREE_USER_AREA_PAGE) then
+if(funcNum == FREE_USER_AREA_PAGE) then
 	backup;
 	R1 = RELEASE_PAGE;
 	R2 = [PROCESS_TABLE + (currPid * 16) + 11];

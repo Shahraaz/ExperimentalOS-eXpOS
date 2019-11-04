@@ -1,24 +1,24 @@
 alias funcNum R1;
 alias curPid R2;
 
-if(funcNum == 3) then
+if(funcNum == TERMINAL_WRITE) then
 	backup;
-	R1 = 8;
+	R1 = ACQUIRE_TERMINAL;
 	R2 = [SYSTEM_STATUS_TABLE + 1];
 	call MOD_0;
 	restore;
 	print R3;
 	backup;
-	R1 = 9;
+	R1 = RELEASE_TERMINAL;
 	R2 = [SYSTEM_STATUS_TABLE + 1];
 	call MOD_0;
 	restore;
 	return;
 endif;
 
-if(funcNum == 4) then
+if(funcNum == TERMINAL_READ) then
 	backup;
-	R1 = 8;
+	R1 = ACQUIRE_TERMINAL;
 	R2 = [SYSTEM_STATUS_TABLE + 1];
 	call MOD_0;
 	restore;
@@ -28,6 +28,25 @@ if(funcNum == 4) then
 	call MOD_5;
 	restore;
 	[[PTBR + 2*(R3/512)]*512 + ((R3)%512)] = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1] * 16) + 8];
+	return;
+endif;
+
+if(funcNum == DISK_LOAD) then
+	alias page_number R3;
+	alias block_number R4;
+	backup;
+	R1 = ACQUIRE_DISK;
+	R2 = curPid;
+	call MOD_0;
+	restore;
+	[DISK_STATUS_TABLE + 1] = 0;
+	[DISK_STATUS_TABLE + 2] = page_number;
+	[DISK_STATUS_TABLE + 3] = block_number;
+	[PROCESS_TABLE + (curPid*16) + 4] = WAIT_DISK;
+	load(page_number,block_number);
+	backup;
+	call MOD_5;
+	restore;
 	return;
 endif;
 return;

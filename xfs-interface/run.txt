@@ -1,11 +1,13 @@
 fdisk
 load --init $HOME/myexpos/expl/expl_progs/shell.xsm
 load --exec $HOME/myexpos/expl/expl_progs/gcd.xsm
+load --exec $HOME/myexpos/expl/expl_progs/even.xsm
 load --exhandler $HOME/myexpos/spl/spl_progs/haltprog.xsm
 load --library $HOME/myexpos/expl/library.lib
 load --idle $HOME/myexpos/expl/expl_progs/idle.xsm
 load --int=timer $HOME/myexpos/spl/spl_progs/sampleTimer.xsm
 load --int=console $HOME/myexpos/spl/spl_progs/console_interrupt.xsm
+load --int=disk $HOME/myexpos/spl/spl_progs/disk_interrupt.xsm
 load --int=6 $HOME/myexpos/spl/spl_progs/int6.xsm
 load --int=7 $HOME/myexpos/spl/spl_progs/int7.xsm
 load --int=9 $HOME/myexpos/spl/spl_progs/int9.xsm

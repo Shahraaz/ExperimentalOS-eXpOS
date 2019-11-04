@@ -34,9 +34,7 @@ exitPID = [SYSTEM_STATUS_TABLE+1];
 backup;
 R1 = EXIT_PROCESS;
 R2 = exitPID;
-print "1start";
 call MOD_1;
-print "1end";
 restore;
 alias user_area_page_number R7;
 user_area_page_number = [PROCESS_TABLE + (exitPID * 16) + 11];
@@ -53,9 +51,7 @@ PTBR = PAGE_TABLE_BASE + exitPID*20;
 
 backup;
 R1 = 1;
-print "2start";
 call MOD_2;
-print "2end";
 [PTBR + 16] = R0;
 [PTBR + 17] = "0110";
 restore;
@@ -91,7 +87,15 @@ if([inodePos + 8] != -1) then
 	[PTBR + 8] = R0;
 	[PTBR + 9] = "0100";
 	restore;
-	loadi([PTBR + 8],[inodePos + 8]);
+	backup;
+	print "DLOAD_START";
+	R1 = DISK_LOAD;
+	R2 = exitPID;
+	R3 = [PTBR + 8];
+	R4 = [inodePos + 8];
+	call MOD_4;
+	print "DLOAD_END";
+	restore;
 endif;
 
 if([inodePos + 9] != -1) then
@@ -101,7 +105,13 @@ if([inodePos + 9] != -1) then
 	[PTBR + 10] = R0;
 	[PTBR + 11] = "0100";
 	restore;
-	loadi([PTBR + 10],[inodePos + 9]);
+	backup;
+	R1 = DISK_LOAD;
+	R2 = exitPID;
+	R3 = [PTBR + 10];
+	R4 = [inodePos + 9];
+	call MOD_4;
+	restore;
 endif;
 
 
@@ -112,7 +122,13 @@ if([inodePos + 10] != -1) then
 	[PTBR + 12] = R0;
 	[PTBR + 13] = "0100";
 	restore;
-	loadi([PTBR + 12],[inodePos + 10]);
+	backup;
+	R1 = DISK_LOAD;
+	R2 = exitPID;
+	R3 = [PTBR + 12];
+	R4 = [inodePos + 10];
+	call MOD_4;
+	restore;
 endif;
 
 
@@ -123,8 +139,22 @@ if([inodePos + 11] != -1) then
 	[PTBR + 14] = R0;
 	[PTBR + 15] = "0100";
 	restore;
-	loadi([PTBR + 14],[inodePos + 11]);
+	backup;
+	R1 = DISK_LOAD;
+	R2 = exitPID;
+	R3 = [PTBR + 14];
+	R4 = [inodePos + 11];
+	call MOD_4;
+	restore;
 endif;
+
+alias off R9;
+off = 496;
+
+while(off <= 511) do
+	[user_area_page_number * 512] = -1;
+	off = off + 2;
+endwhile;
 
 print "SACK";
 [[PTBR+16] * 512] = [[PTBR + 8]*512 + 1];
