@@ -1,164 +1,164 @@
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13] = SP;	//UPTR = SP
+
+// change SP to point to kernel stack
+SP = [PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
+
+//set the MODE to system call num == 9
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9] = 9;
+
+//get the name of the file from user stack
 alias userSP R0;
-userSP = SP;
-print "Here";
-[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1] * 16) + 13] = SP;
-SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1] * 16) + 11] * 512 - 1;
-[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1] * 16) + 9] = 9;
-alias physical_page_number R1;
-alias offset R2;
-alias file_name R3;
-physical_page_number = [PTBR + 2*((userSP - 4)/512)];
-offset = (userSP - 4)%512;
-file_name = [physical_page_number * 512 + offset];
-alias i R4;
-alias idx R5;
-i = 1;
-idx = -1;
+alias fileName R1;
+
+userSP = [PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+13];
+fileName = [[PTBR+(2*(userSP-4))/512]*512 + (userSP-4)%512];
+
+alias present R2;
+present = 0;
+
+alias i R3;
+alias Inode_Index R4;
+i = 0;
+
+// Search for the fileName in the copy of INODE TABLE present in page 59
 while(i < MAX_FILE_NUM) do
-	if(([INODE_TABLE+(i*16)]==EXEC) && ([INODE_TABLE+(i*16)+1]==file_name)) then
-		idx = i;
+	if([INODE_TABLE+i*16]==EXEC && [INODE_TABLE + i*16 + 1] == fileName) then
+		present = 1;
+		Inode_Index = i;
 		break;
 	endif;
 	i = i + 1;
 endwhile;
-if(idx < 0) then
-	print "NOT FOUND!";
-	print file_name;
+
+if(present == 0) then
+	[[PTBR+(2*(userSP-1))/512]*512+ (userSP-1)%512] = -1;
 	SP = userSP;
-	[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+9]=0;
-	[[PTBR+2*((userSP - 1)/512)]*512 + ((userSP - 1)%512)] = -1;
 	ireturn;
 endif;
-alias exitPID R6;
-exitPID = [SYSTEM_STATUS_TABLE+1];
-backup;
-R1 = EXIT_PROCESS;
-R2 = exitPID;
-call MOD_1;
-restore;
-alias user_area_page_number R7;
-user_area_page_number = [PROCESS_TABLE + (exitPID * 16) + 11];
-[MEMORY_FREE_LIST + user_area_page_number] = [MEMORY_FREE_LIST + user_area_page_number] + 1;
-[SYSTEM_STATUS_TABLE + 2] = [SYSTEM_STATUS_TABLE + 2] - 1;
-SP = [PROCESS_TABLE + (exitPID*16) + 11]*512 - 1;
-[PROCESS_TABLE + (exitPID*16) + 4] = RUNNING;
-[PROCESS_TABLE + (exitPID*16) + 7] = idx;
-PTBR = PAGE_TABLE_BASE + exitPID*20;
-[PTBR + 0] = 63;
-[PTBR + 1] = "0100";
-[PTBR + 2] = 64;
-[PTBR + 3] = "0100";
+
+[[PTBR+(2*(userSP-1))/512]*512 + (userSP-1)%512] = 0;
+
+alias functionNum R1;
+alias pid R2;
 
 backup;
+functionNum = 3;	//for exit process
+pid = [SYSTEM_STATUS_TABLE+1];
+call MOD_1;	//call process manager module
+restore;
+
+//exit process deallocates the pages present in the page table and the user area page and the STATE is set to TERMINATED
+
+//get the user area page num of current process which has been deallocated by exit process
+// allocate the same page for new process
+
+alias user_page R5;
+user_page = [PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11];
+
+[MEMORY_FREE_LIST + user_page] = [MEMORY_FREE_LIST + user_page] + 1;
+[SYSTEM_STATUS_TABLE+2] = [SYSTEM_STATUS_TABLE+2] - 1;	//decrement the memory free count field in SYSTEM_STATUS_TABLE
+
+//SP = user_page*512 - 1;
+
+//new process uses the PID of the terminated process
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+4] = RUNNING;
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+7] = Inode_Index;
+
+//allocate new pages and set the page table entries for new process
+
+PTBR = PAGE_TABLE_BASE + 20*[SYSTEM_STATUS_TABLE+1];
+
+//library
+[PTBR+0] = 63;
+[PTBR+1] = "0100";
+[PTBR+2] = 64;
+[PTBR+3] = "0100";
+
+//invalidate heap pages
+backup;
+
+//R1 = 1;
+//call MOD_2;
+[PTBR+4] = -1;
+[PTBR+5] = "0000";
+
+//R1 = 1;
+//call MOD_2;
+[PTBR+6] = -1;
+[PTBR+7] = "0000";
+
+//allocate stack pages
+
 R1 = 1;
 call MOD_2;
-[PTBR + 16] = R0;
-[PTBR + 17] = "0110";
-restore;
+[PTBR+16] = R0;
+[PTBR+17] = "0110";
 
-backup;
 R1 = 1;
 call MOD_2;
-[PTBR + 18] = R0;
-[PTBR + 19] = "0110";
+[PTBR+18] = R0;
+[PTBR+19] = "0110";
+
 restore;
 
-backup;
-R1 = 1;
-call MOD_2;
-[PTBR + 4] = R0;
-[PTBR + 5] = "0110";
-restore;
+alias inode R6;
+inode = INODE_TABLE + Inode_Index*16;
 
-backup;
-R1 = 1;
-call MOD_2;
-[PTBR + 6] = R0;
-[PTBR + 7] = "0110";
-restore;
-
-alias inodePos R8;
-inodePos = INODE_TABLE + (idx*16);
-
-if([inodePos + 8] != -1) then
+//only one code page is initialised rest are made invalid
+if([inode+8]!=-1) then
 	backup;
-	R1 = 1;
+	R1 = GET_CODE_PAGE;
+	R2 = [inode+8];
 	call MOD_2;
-	[PTBR + 8] = R0;
-	[PTBR + 9] = "0100";
+	[PTBR+8] = R0;
+	[PTBR+9] = "0100";
 	restore;
-	backup;
-	print "DLOAD_START";
-	R1 = DISK_LOAD;
-	R2 = exitPID;
-	R3 = [PTBR + 8];
-	R4 = [inodePos + 8];
-	call MOD_4;
-	print "DLOAD_END";
-	restore;
+	
+	//backup;
+	//R1 = DISK_LOAD;
+	//R2 = pid;
+	//R3 = [PTBR+8];
+	//R4 = [inode+8];
+	//call MOD_4;
+	//restore;
 endif;
 
-if([inodePos + 9] != -1) then
-	backup;
-	R1 = 1;
-	call MOD_2;
-	[PTBR + 10] = R0;
-	[PTBR + 11] = "0100";
-	restore;
-	backup;
-	R1 = DISK_LOAD;
-	R2 = exitPID;
-	R3 = [PTBR + 10];
-	R4 = [inodePos + 9];
-	call MOD_4;
-	restore;
-endif;
+[PTBR+10] = -1;
+[PTBR+11] = "0000";
 
+[PTBR+12] = -1;
+[PTBR+13] = "0000";
 
-if([inodePos + 10] != -1) then
-	backup;
-	R1 = 1;
-	call MOD_2;
-	[PTBR + 12] = R0;
-	[PTBR + 13] = "0100";
-	restore;
-	backup;
-	R1 = DISK_LOAD;
-	R2 = exitPID;
-	R3 = [PTBR + 12];
-	R4 = [inodePos + 10];
-	call MOD_4;
-	restore;
-endif;
+[PTBR+14] = -1;
+[PTBR+15] = "0000";
 
+//initialise resource table entries
+i = 510;
 
-if([inodePos + 11] != -1) then
-	backup;
-	R1 = 1;
-	call MOD_2;
-	[PTBR + 14] = R0;
-	[PTBR + 15] = "0100";
-	restore;
-	backup;
-	R1 = DISK_LOAD;
-	R2 = exitPID;
-	R3 = [PTBR + 14];
-	R4 = [inodePos + 11];
-	call MOD_4;
-	restore;
-endif;
-
-alias off R9;
-off = 496;
-
-while(off <= 511) do
-	[user_area_page_number * 512] = -1;
-	off = off + 2;
+while(i>=496) do
+	[user_page*512+i] = -1;
+	i = i - 2;
 endwhile;
 
-print "SACK";
-[[PTBR+16] * 512] = [[PTBR + 8]*512 + 1];
-SP = 8 * 512;
-[PROCESS_TABLE + (exitPID * 16) + 9] = 0;
-print "SCAK1";
+i = 0;
+while(i<10) do
+	[DISK_MAP_TABLE+[SYSTEM_STATUS_TABLE+1]*10 + i ] = -1;
+	i = i + 1;
+endwhile;
+
+//initialise disk map table for the process
+[DISK_MAP_TABLE+[SYSTEM_STATUS_TABLE+1]*10+4] = [inode+8];
+[DISK_MAP_TABLE+[SYSTEM_STATUS_TABLE+1]*10+5] = [inode+9];
+[DISK_MAP_TABLE+[SYSTEM_STATUS_TABLE+1]*10+6] = [inode+10];
+[DISK_MAP_TABLE+[SYSTEM_STATUS_TABLE+1]*10+7] = [inode+11];
+
+//store the entry point into the user stack
+[[PTBR+16]*512] = [[PTBR+8]*512+1];
+
+//change the SP to user stack
+SP = 8*512;
+
+//change mode
+[PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+9] = 0;
+
 ireturn;

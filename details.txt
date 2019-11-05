@@ -1,0 +1,27 @@
+EX_HANDLER / EXCEPTION 	1024 	Starting address of Exception Handler
+TIMER 	2048 	Starting address of Timer Interrupt Routine
+DISK 	3072 	Starting address of Disk Controller Interrupt Routine
+CONSOLE 	4096 	Starting address of Console Interrupt Routine
+INT_4 	5120 	(Create, 1)*, (Delete, 4)
+INT_5 	6144 	(Seek, 6), (Open, 2), (Close,3)
+INT_6 	7168 	(Read, 7)
+INT_7 	8192 	(Write, 5)
+INT_8 	9216 	(Fork, 8)
+INT_9 	10240 	(Exec, 9)
+INT_10 	11264 	(Exit, 10)
+INT_11 	12288 	(Getpid, 11), (Getppid, 12), (Wait, 13), (Signal, 14)
+INT_12 	13312 	(Logout, 28)
+INT_13 	14336 	(Semget, 17), (Semrelease, 18)
+INT_14 	15360 	(SemLock, 19), (SemUnLock, 20)
+INT_15 	16384 	(Shutdown, 21)
+INT_16 	17408 	(Newusr, 22), (Remusr, 23), (Setpwd, 24), (Getuname, 25), (Getuid, 26)
+INT_17 	18432 	(Login, 27)
+INT_18 	19456 	(Test0, 96), (Test1, 97), (Test2, 98), (Test3, 99)
+MOD_0 / RESOURCE_MANAGER 	20480 	Resource Manager
+MOD_1 / PROCESS_MANAGER 	21504 	Process Manager
+MOD_2 / MEMORY_MANAGER 	22528 	Memory Manager
+MOD_3 / FILE_MANAGER 	23552 	File Manager
+MOD_4 / DEVICE_MANAGER 	24576 	Device Manager
+MOD_5 / CONTEXT_SWITCH / SCHEDULER 	25600 	Context Switch Module (Scheduler Module)
+MOD_6 / PAGER_MODULE 	26624 	Pager Module
+MOD_7 / BOOT_MODULE 	27648 	Boot Module

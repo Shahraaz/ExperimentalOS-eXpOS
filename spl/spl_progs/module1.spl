@@ -1,53 +1,103 @@
-alias funcNum R1;
-alias currPid R2;
 
-if(funcNum == FREE_USER_AREA_PAGE) then
+if(R1 == FREE_USER_AREA_PAGE) then	// free user area page
+	//get the user area page using PID
 	backup;
 	R1 = RELEASE_PAGE;
-	R2 = [PROCESS_TABLE + (currPid * 16) + 11];
+	R2 = [PROCESS_TABLE + R2*16 + 11]; //user area page
 	call MOD_2;
 	restore;
 	return;
 endif;
 
-if(funcNum == EXIT_PROCESS) then
-	backup;
-	R1 = FREE_PAGE_TABLE;
-	R2 = currPid;
-	call MOD_1;
-	restore;
 
+if(R1 == EXIT_PROCESS) then	// exit process
 	backup;
-	R1 = FREE_USER_AREA_PAGE;
-	R2 = currPid;
+
+	alias pid R3;
+	pid = R2;
+		
+	R1 = FREE_PAGE_TABLE;
+	R2 = pid;
 	call MOD_1;
+
+	R1 = FREE_USER_AREA_PAGE;	
+	R2 = pid;
+	call MOD_1;
+
 	restore;
-	
-	[PROCESS_TABLE + (currPid*16) + 4] = TERMINATED;
+	[PROCESS_TABLE+R2*16+4] = TERMINATED;
+	//print(R2);
 	return;
 endif;
 
-if(funcNum == FREE_PAGE_TABLE) then
-	alias temp R4;
-	PTBR = PAGE_TABLE_BASE + currPid*20;
-	[PTBR + 0] = -1;
-	[PTBR + 1] = "0000";
-	[PTBR + 2] = -1;
-	[PTBR + 3] = "0000";
-	temp = 4;
-	while( temp < 20) do
-		if([PTBR + temp] != -1) then
+if(R1 == FREE_PAGE_TABLE) then	// free page table
+	backup;
+	alias i R3;
+	alias pid R4;
+	i = 4;
+	pid = R2;
+	
+	while(i<20) do
+		if([PAGE_TABLE_BASE + 20*pid + i] != -1) then
 			backup;
 			R1 = RELEASE_PAGE;
-			R2 = currPid;
+			R2 = [PAGE_TABLE_BASE + 20*pid + i];
 			call MOD_2;
 			restore;
-			[PTBR + temp] = -1;
-			[PTBR + temp + 1] = "0000";
-		endif;
-		temp = temp + 2;
+			[PAGE_TABLE_BASE + 20*pid + i] = -1;
+			[PAGE_TABLE_BASE + 20*pid + i+1] = "0000";
+		endif;	
+		i = i + 2;
 	endwhile;
-	return;
+	
+	//check heap and stack entries in disk map table	
+	alias disk_table R5;
+	disk_table = DISK_MAP_TABLE+pid*10;
+	
+	if([disk_table+2]!=-1) then
+		backup;
+		R1 = RELEASE_BLOCK;
+		R2 = [disk_table+2];
+		R3 = pid;
+		call MOD_2;
+		restore;
+	endif;
+	
+	if([disk_table+3]!=-1) then
+		backup;
+		R1 = RELEASE_BLOCK;
+		R2 = [disk_table+3];
+		R3 = pid;
+		call MOD_2;
+		restore;
+	endif;
+	
+	if([disk_table+8]!=-1) then
+		backup;
+		R1 = RELEASE_BLOCK;
+		R2 = [disk_table+8];
+		R3 = pid;
+		call MOD_2;
+		restore;
+	endif;
+	
+	if([disk_table+9]!=-1) then
+		backup;
+		R1 = RELEASE_BLOCK;
+		R2 = [disk_table+9];
+		R3 = pid;
+		call MOD_2;
+		restore;
+	endif;	
+	
+	//invalidate the disk map table entries
+	i = 0;
+	while(i<10) do
+		[disk_table+i] = -1;
+		i = i + 1;
+	endwhile;
+		
+	restore;
+	return;	
 endif;
 
-return;

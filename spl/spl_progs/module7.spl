@@ -65,6 +65,8 @@ loadi(60,4);
 loadi(6,19);
 loadi(7,20);
 
+loadi(61,2);
+
 PTBR = PAGE_TABLE_BASE + 20;
 PTLR = 10;
 
