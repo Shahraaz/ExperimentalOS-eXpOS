@@ -1,0 +1,25 @@
+int main()
+{
+	decl
+		str mystr;
+		int ret,ret2;
+	enddecl
+	begin
+		ret2 = exposcall("Fork");
+		if(ret2 == 0) then
+			mystr = "inChild";
+			ret = exposcall("Write",-2,mystr);
+			mystr = "llist.xsm";
+			ret = exposcall("Exec",mystr);
+		else
+			mystr = "inParent";
+			ret = exposcall("Write",-2,mystr);
+			mystr = "childPID";
+			ret = exposcall("Write",-2,mystr);
+			ret = exposcall("Write",-2,ret2);
+			mystr = "gcd.xsm";
+			ret = exposcall("Exec",mystr);
+		endif;
+		return 0;
+	end
+}

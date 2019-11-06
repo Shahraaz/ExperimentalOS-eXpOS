@@ -31,12 +31,14 @@ PTBR = [PROCESS_TABLE + (newPid*16) + 14];
 PTLR = [PROCESS_TABLE + (newPid*16) + 15];
 [SYSTEM_STATUS_TABLE+1] = newPid;
 
-if([PROCESS_TABLE + (newPid*16) + 4]==CREATED) then
+if([PROCESS_TABLE + (newPid*16) + 4] == CREATED) then
+	BP = [[PROCESS_TABLE + (newPid * 16) + 11]*512];
 	SP = [PROCESS_TABLE +(newPid*16) + 13];
 	[PROCESS_TABLE + (newPid*16) + 4] = RUNNING;
 	[PROCESS_TABLE + (newPid*16) + 9] = 0;
 	ireturn; 
 endif;
+
 [PROCESS_TABLE + (newPid*16) + 4] = RUNNING;
 multipop(BP);
 return;

@@ -6,32 +6,23 @@ SP = [PROCESS_TABLE+[SYSTEM_STATUS_TABLE+1]*16+11]*512-1;
 backup;
 
 multipush(EIP);
-//backup;
-//print EC;
-//restore;
-
-//breakpoint;
-//multipush(EC);
-//print EC;
 
 if(EC==1) then
 	backup;
 	print("IllInst");
+	print([SYSTEM_STATUS_TABLE + 1]);
 	R1 = EXIT_PROCESS;
 	R2 = [SYSTEM_STATUS_TABLE+1];
 	call MOD_1;
 	restore;
 	call MOD_5;
 endif;
-//multipop(EC);
 
-//breakpoint;
-//multipush(EC);
-//print EC;
 if(EC==2) then
 
 	backup;
 	print("IllAccess");
+	print([SYSTEM_STATUS_TABLE + 1]);
 	R1 = EXIT_PROCESS;
 	R2 = [SYSTEM_STATUS_TABLE+1];
 	call MOD_1;
@@ -39,14 +30,7 @@ if(EC==2) then
 	
 	call MOD_5;
 endif;
-//multipop(EC);
 
-//backup;
-//breakpoint;
-//print EC;
-//restore;
-
-//breakpoint;
 if(EC == 3) then
 	backup;	
 	print("Arithmet");

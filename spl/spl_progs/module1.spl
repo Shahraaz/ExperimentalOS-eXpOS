@@ -101,3 +101,19 @@ if(R1 == FREE_PAGE_TABLE) then	// free page table
 	return;	
 endif;
 
+if(R1 == GET_PCB_ENTRY) then
+	alias i R5;
+	i = 0;
+	R0 = -1;
+	while(i < 16) do
+		if([PROCESS_TABLE + 16*i + 4] == TERMINATED) then
+			R0 = i;
+			[PROCESS_TABLE + 16*i + 4] = ALLOCATED;
+			[PROCESS_TABLE + 16*i + 14] = PAGE_TABLE_BASE + (i*20);
+			[PROCESS_TABLE + 16*i + 15] = 10;
+			break;
+		endif;	
+		i = i + 1;
+	endwhile;
+	return;
+endif;

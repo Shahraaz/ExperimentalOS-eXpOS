@@ -1,0 +1,151 @@
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 9] = 8;
+[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13] = SP;
+SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 11]*512 - 1;
+
+R1 = GET_PCB_ENTRY;
+call MOD_1;
+
+if(R0 == -1) then
+	[PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 9] = 0;
+	SP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13];
+	alias userSP R0;
+	userSP = [PROCESS_TABLE + ([SYSTEM_STATUS_TABLE + 1]*16) + 13];
+	[[PTBR + 2*((userSP - 1)/512)]/512 + ((userSP - 1)%512)] = -1;
+	R0 = -1;
+	ireturn;
+endif;
+
+alias parentPID R7;
+alias childPID R6;
+parentPID = [SYSTEM_STATUS_TABLE + 1];
+childPID = R0;
+
+print "Parent";
+print parentPID;
+print "Child";
+print childPID;
+
+if([PTBR + 4] == -1) then
+	backup;
+	R1 = GET_FREE_PAGE;
+	call MOD_2;
+	[PTBR + 4] = R0;
+	[PTBR + 5] = "0110";
+	restore;
+endif;
+
+if([PTBR + 6] == -1) then
+	backup;
+	R1 = GET_FREE_PAGE;
+	call MOD_2;
+	[PTBR + 6] = R0;
+	[PTBR + 7] = "0110";
+	restore;
+endif;
+
+alias par_protable R8;
+alias child_pt R9;
+alias child_protable R10;
+alias par_user_area_page R11;
+alias child_user_area_page R12;
+
+par_protable = PROCESS_TABLE + 16*[SYSTEM_STATUS_TABLE + 1];
+par_user_area_page = [par_protable + 11];
+child_pt = PAGE_TABLE_BASE + childPID * 20;
+child_protable = PROCESS_TABLE + 16*childPID;
+
+R1 = GET_FREE_PAGE;
+call MOD_2;
+[child_pt + 16] = R0;
+[child_pt + 17] = "0110";
+
+R1 = GET_FREE_PAGE;
+call MOD_2;
+[child_pt + 18] = R0;
+[child_pt + 19] = "0110";
+
+R1 = GET_FREE_PAGE;
+call MOD_2;
+[child_pt + 11] = R0;
+child_user_area_page = R0;
+
+alias i R3;
+i = 3;
+while(i < 16) do 
+	if((i == 3) || (i == 6) || (i == 7) || (i == 10) || (i == 13)) then
+		[child_protable + i] = [par_protable + i];
+	endif;
+	i = i + 1;
+endwhile;
+
+[child_protable + 0] = 0;
+[child_protable + 9] = 0;
+[child_protable + 12] = 0;
+[child_protable + 1] = childPID;
+[child_protable + 2] = parentPID;
+[child_protable + 4] = CREATED;
+
+i = 496;
+while(i <= 511) do
+	[child_user_area_page * 512 + i ] = [par_user_area_page*512 + i];
+	i = i + 1;
+endwhile;
+
+alias par_disk_table R13;
+alias child_disk_table R14;
+
+par_disk_table = DISK_MAP_TABLE + parentPID*10;
+child_disk_table = DISK_MAP_TABLE + childPID*10;
+
+i = 2;
+while(i < 8) do
+	[child_disk_table + i] = [par_disk_table + i];
+	i = i + 1;
+endwhile;
+[child_disk_table + 8] = -1;
+[child_disk_table + 9] = -1;
+
+i = 0;
+while(i <= 15) do
+	[child_pt + i] = [PTBR + i];
+	if((i%2) == 0) then
+		if([PTBR + i] != -1) then
+			[MEMORY_FREE_LIST + [PTBR+i]] = [MEMORY_FREE_LIST + [PTBR + i]] + 1;
+		endif;
+	endif;
+	i = i + 1;
+endwhile;
+
+alias par_stack R5;
+alias child_stack R4;
+
+par_stack = [PTBR + 16]*512;
+child_stack = [child_pt + 16]*512;
+
+i = 0;
+while(i < 512) do
+	[child_stack + i] = [par_stack + i];
+	i = i + 1;
+endwhile;
+
+par_stack = [PTBR + 18]*512;
+child_stack = [child_pt + 18]*512;
+
+i = 0;
+while(i < 512) do
+	[child_stack + i] = [par_stack + i];
+	i = i + 1;
+endwhile;
+
+[[child_protable + 11]*512] = BP;
+
+par_stack = [par_protable + 13];
+child_stack = [child_protable + 13];
+
+[[PTBR + 2*(par_stack - 1)/512]*512 + (par_stack - 1)%512] = childPID;
+[[child_pt + 2*(child_stack -1 )/512] * 512 + (child_stack - 1)%512] = 0;
+
+SP = [par_protable + 13];
+[par_protable + 9] = 0;
+
+ireturn;

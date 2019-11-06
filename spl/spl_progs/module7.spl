@@ -37,6 +37,10 @@ loadi(15,28);
 loadi(16,29);
 loadi(17,30);
 
+//Load int 8
+loadi(18,31);
+loadi(19,32);
+
 //Load init Program
 loadi(65,7);
 loadi(66,8);
@@ -66,6 +70,10 @@ loadi(6,19);
 loadi(7,20);
 
 loadi(61,2);
+
+[TERMINAL_STATUS_TABLE] = 0;
+[SYSTEM_STATUS_TABLE + 3] = 0;
+[DISK_STATUS_TABLE] = 0;
 
 PTBR = PAGE_TABLE_BASE + 20;
 PTLR = 10;
