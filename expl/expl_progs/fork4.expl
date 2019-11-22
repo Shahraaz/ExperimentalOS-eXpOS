@@ -1,0 +1,13 @@
+int main()
+{
+	decl
+		int ret;
+	enddecl
+	begin
+		ret = exposcall("Fork");
+		ret = 0;
+		ret = exposcall("Fork");
+		ret = 0;
+		return 0;
+	end
+}

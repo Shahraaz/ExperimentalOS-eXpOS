@@ -1,12 +1,7 @@
 fdisk
 load --init $HOME/myexpos/expl/expl_progs/shell.xsm
 load --exec $HOME/myexpos/expl/expl_progs/gcd.xsm
-load --exec $HOME/myexpos/expl/expl_progs/odd.xsm
-load --exec $HOME/myexpos/expl/expl_progs/even.xsm
-load --exec $HOME/myexpos/expl/expl_progs/bubble.xsm
-load --exec $HOME/myexpos/expl/expl_progs/llist.xsm
 load --exec $HOME/myexpos/expl/expl_progs/llistv1.xsm
-load --exec $HOME/myexpos/expl/expl_progs/fork.xsm
 load --exhandler $HOME/myexpos/spl/spl_progs/exceptionHandler.xsm
 load --library $HOME/myexpos/expl/library.lib
 load --idle $HOME/myexpos/expl/expl_progs/idle.xsm

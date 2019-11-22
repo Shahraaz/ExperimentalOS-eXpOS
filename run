@@ -1,13 +1,14 @@
 #!/bin/bash
 curr=$(pwd)
 cd $HOME/myexpos/
-if [ "$#" -ne 1 ]; then
+if [ "$#" == 0 ]; then
 	bash ./compile_spl
 	bash ./compile_expl
-	cd xfs-interface
-	./xfs-interface run run.txt
-	cd ../
+	bash ./load_xfs
+	cd xsm
+	./xsm
+else
+	cd xsm
+	./xsm $*
 fi;
-cd xsm
-./xsm
 cd $curr

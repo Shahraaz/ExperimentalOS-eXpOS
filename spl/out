@@ -1,0 +1,258 @@
+Done compiling console_interrupt.spl...
+Done compiling disk_interrupt.spl...
+Done compiling exceptionHandler.spl...
+Done compiling fact.spl...
+Done compiling haltprog.spl...
+Done compiling int10.spl...
+Done compiling int6.spl...
+Done compiling int7.spl...
+
+160: Unknown identifier child used!!
+Done compiling int8.spl...
+Done compiling int9.spl...
+Done compiling int9ch.spl...
+Done compiling module0.spl...
+Done compiling module1.spl...
+Done compiling module2.spl...
+Done compiling module4.spl...
+Done compiling module5.spl...
+Done compiling module7.spl...
+Done compiling module8.spl...
+Done compiling oddnos.spl...
+Done compiling os_startup.spl...
+Done compiling os_startup_copy.spl...
+Done compiling sampleTimer.spl...
+Done compiling sumOfSq.spl...
+Done compiling bubble.expl...
+Done compiling even.expl...
+Done compiling fork.expl...
+Done compiling fork3.expl...
+Done compiling fork4.expl...
+Done compiling gcd.expl...
+Done compiling idle.expl...
+Done compiling llist.expl...
+Done compiling llistv1.expl...
+Done compiling odd.expl...
+Done compiling prime.expl...
+Done compiling samples.expl...
+Done compiling shell.expl...
+Done compiling student.expl...
+Formatting Complete. "disk.xfs" created.
+D_mod5
+1
+BP
+0
+SP
+4096
+STTACK
+2056
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+~STACKK
+~D_mod5
+fork4.xsm
+------
+Child
+2
+Parent
+1
+4113
+2064
+4096
+4113
+Fork
+Fork
+Fork
+Fork
+Fork
+2086
+4098
+8
+Fork
+Fork
+Fork
+Fork
+376
+380
+0
+0
+D_int8
+BP
+4106
+SP
+4112
+4112
+~D_int8
+------
+D_mod5
+2
+BP
+4106
+SP
+4112
+STTACK
+4113
+2064
+4096
+4113
+Fork
+Fork
+Fork
+Fork
+Fork
+2086
+4098
+8
+Fork
+Fork
+Fork
+0
+376
+380
+0
+0
+~STACKK
+~D_mod5
+------
+Child
+3
+Parent
+2
+4113
+2064
+4096
+0
+Fork
+Fork
+Fork
+Fork
+Fork
+2128
+4098
+8
+Fork
+Fork
+Fork
+Fork
+376
+380
+0
+0
+D_int8
+BP
+4106
+SP
+4112
+4112
+~D_int8
+------
+D_mod5
+3
+BP
+4106
+SP
+4112
+STTACK
+4113
+2064
+4096
+0
+Fork
+Fork
+Fork
+Fork
+Fork
+2128
+4098
+8
+Fork
+Fork
+Fork
+0
+376
+380
+0
+0
+~STACKK
+~D_mod5
+------
+Child
+4
+Parent
+1
+4113
+2064
+4096
+0
+Fork
+Fork
+Fork
+Fork
+Fork
+2128
+4098
+8
+Fork
+Fork
+Fork
+Fork
+376
+380
+0
+0
+D_int8
+BP
+4106
+SP
+4112
+4112
+~D_int8
+------
+D_mod5
+4
+BP
+4096
+SP
+4112
+STTACK
+4113
+2064
+4096
+0
+Fork
+Fork
+Fork
+Fork
+Fork
+2128
+4098
+8
+Fork
+Fork
+Fork
+0
+376
+380
+0
+0
+~STACKK
+~D_mod5
+PFault
+Machine is halting.

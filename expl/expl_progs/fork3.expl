@@ -1,0 +1,29 @@
+int main()
+{
+	decl
+		int ret;
+	enddecl
+	begin
+		ret = exposcall("Write",-2,"ONE");
+		ret = exposcall("Fork");
+		if(ret != -1) then
+			write("TWO");	
+			ret = exposcall("Fork");
+			if(ret != -1) then
+				//ret = exposcall("Write",-2,"THREE");
+				ret = exposcall("Fork");
+				//ret = exposcall("Write",-2,"FOUR");
+				if(ret != -1) then
+					 ret = exposcall("Exec","gcd.xsm");
+				else
+					ret = exposcall("Write",-2,"FORK ERROR3");
+				endif;
+			else
+				ret = exposcall("Write",-2,"FORK ERROR2");
+			endif;
+		else
+			ret = exposcall("Write",-2,"FORK ERROR1");
+		endif;
+		return 0;
+	end
+}

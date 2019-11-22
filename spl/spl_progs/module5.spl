@@ -36,6 +36,7 @@ if([PROCESS_TABLE + (newPid*16) + 4] == CREATED) then
 	SP = [PROCESS_TABLE +(newPid*16) + 13];
 	[PROCESS_TABLE + (newPid*16) + 4] = RUNNING;
 	[PROCESS_TABLE + (newPid*16) + 9] = 0;
+	breakpoint;
 	ireturn; 
 endif;
 
