@@ -7,8 +7,17 @@ int main()
 	begin
 		msg = "in pid.expl";
 		ret = exposcall("Write",-2,msg);
+
+		msg = "pid";
+		ret = exposcall("Write",-2,msg);
+
 		tmp = exposcall("Getpid");
+
 		ret = exposcall("Write",-2,tmp);
+
+		msg = "ppid";
+		ret = exposcall("Write",-2,msg);
+
 		tmp = exposcall("Getppid");
 		ret = exposcall("Write",-2,tmp);
 		return 0;

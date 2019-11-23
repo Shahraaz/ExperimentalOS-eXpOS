@@ -1,6 +1,7 @@
 fdisk
 load --init $HOME/myexpos/expl/expl_progs/shell2.xsm
 load --exec $HOME/myexpos/expl/expl_progs/gcd.xsm
+load --exec $HOME/myexpos/expl/expl_progs/fork21.xsm
 load --exec $HOME/myexpos/expl/expl_progs/llistv1.xsm
 load --exec $HOME/myexpos/expl/expl_progs/pid.xsm
 load --exhandler $HOME/myexpos/spl/spl_progs/exceptionHandler.xsm

@@ -6,11 +6,6 @@ SP = [PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1]*16 + 11]*512 - 1;
 alias syscall R2;
 syscall = [[PTBR+2*(userSP-5)/512]*512 + ((userSP - 5)%512)];
 
-print "int11";
-print syscall;
-print [SYSTEM_STATUS_TABLE+1];
-print "---";
-
 if(syscall == 11) then
     [PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1]*16 + 9] = 11;
     [[PTBR+2*(userSP - 1)/512]*512 + ((userSP - 1)%512)] = [PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1]*16 + 1];

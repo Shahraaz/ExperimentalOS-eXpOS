@@ -74,6 +74,15 @@ while(i < 16) do
 endwhile;
 
 [PROCESS_TABLE + (childPID * 16) + 1] = childPID;
+
+//set ppid field in child process_table
+[PROCESS_TABLE + (childPID * 16) + 2] = parentPID;
+//set tick field for child
+[PROCESS_TABLE + (childPID * 16) + 0] = 0;
+//set mode field for child process
+[PROCESS_TABLE + (childPID * 16) + 9] = 0;
+//set kernel stack pointer
+[PROCESS_TABLE + (childPID * 16) + 12] = 0;
 //PID, PTBR and PTLR are initialized by get_pcb_entry function
 
 //copy parent per-process_resource table
@@ -152,11 +161,11 @@ parent_user_stack = [PROCESS_TABLE + (parentPID * 16) + 13];
 [PROCESS_TABLE + (parentPID * 16) + 9] = 0;
 
 print "FORK";
+print "parent";
 print parentPID;
-print "Parent";
+print "child";
 print childPID;
-print "Child";
-print "--";
+print "---";
 
 SP = [PROCESS_TABLE + (parentPID * 16) + 13];
 breakpoint;
