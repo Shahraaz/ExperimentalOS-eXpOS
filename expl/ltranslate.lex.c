@@ -1,6 +1,6 @@
-#line 2 "ltranslate.lex.c"
+#line 1 "ltranslate.lex.c"
 
-#line 4 "ltranslate.lex.c"
+#line 3 "ltranslate.lex.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -476,8 +476,8 @@ char *yytext;
 	char * variable;
 	int linecount = 2048, k, t = 0, g=0, m=0;	//g is used as a boolean variable for extra prints
 	FILE *intermediate;
+#line 479 "ltranslate.lex.c"
 #line 480 "ltranslate.lex.c"
-#line 481 "ltranslate.lex.c"
 
 #define INITIAL 0
 
@@ -696,7 +696,7 @@ YY_DECL
 	{
 #line 13 "ltranslate.l"
 
-#line 700 "ltranslate.lex.c"
+#line 699 "ltranslate.lex.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -878,7 +878,7 @@ YY_RULE_SETUP
 #line 104 "ltranslate.l"
 ECHO;
 	YY_BREAK
-#line 882 "ltranslate.lex.c"
+#line 881 "ltranslate.lex.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

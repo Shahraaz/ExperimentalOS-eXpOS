@@ -53,6 +53,14 @@ loadi(21,34);
 loadi(22,35);
 loadi(23,36);
 
+//Load int 11
+loadi(24,37);
+loadi(25,38);
+
+//Load int 15
+loadi(32,45);
+loadi(33,46);
+
 // Load exception Handler
 loadi(2,15);
 loadi(3,16);

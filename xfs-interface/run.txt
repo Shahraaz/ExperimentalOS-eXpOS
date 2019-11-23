@@ -1,7 +1,8 @@
 fdisk
-load --init $HOME/myexpos/expl/expl_progs/shell.xsm
+load --init $HOME/myexpos/expl/expl_progs/shell2.xsm
 load --exec $HOME/myexpos/expl/expl_progs/gcd.xsm
 load --exec $HOME/myexpos/expl/expl_progs/llistv1.xsm
+load --exec $HOME/myexpos/expl/expl_progs/pid.xsm
 load --exhandler $HOME/myexpos/spl/spl_progs/exceptionHandler.xsm
 load --library $HOME/myexpos/expl/library.lib
 load --idle $HOME/myexpos/expl/expl_progs/idle.xsm
@@ -13,6 +14,8 @@ load --int=7 $HOME/myexpos/spl/spl_progs/int7.xsm
 load --int=8 $HOME/myexpos/spl/spl_progs/int8.xsm
 load --int=9 $HOME/myexpos/spl/spl_progs/int9.xsm
 load --int=10 $HOME/myexpos/spl/spl_progs/int10.xsm
+load --int=11 $HOME/myexpos/spl/spl_progs/int11.xsm
+load --int=15 $HOME/myexpos/spl/spl_progs/int15.xsm
 load --os $HOME/myexpos/spl/spl_progs/os_startup.xsm
 load --module 0 $HOME/myexpos/spl/spl_progs/module0.xsm
 load --module 1 $HOME/myexpos/spl/spl_progs/module1.xsm

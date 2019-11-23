@@ -1,5 +1,5 @@
 
-#line 3 "lex.yy.c"
+#line 2 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -570,8 +570,8 @@ int linecount = 1;
 void create_node(char nodetype, char *name, int value);
 
 int yylex();
+#line 573 "lex.yy.c"
 #line 574 "lex.yy.c"
-#line 575 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -791,7 +791,7 @@ YY_DECL
 #line 15 "spllexer.l"
 
 
-#line 795 "lex.yy.c"
+#line 794 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1354,7 +1354,7 @@ YY_RULE_SETUP
 #line 323 "spllexer.l"
 ECHO;
 	YY_BREAK
-#line 1358 "lex.yy.c"
+#line 1357 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

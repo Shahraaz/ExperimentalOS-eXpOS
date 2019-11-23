@@ -1,5 +1,5 @@
 
-#line 3 "lex.yy.c"
+#line 2 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -559,8 +559,8 @@ char *yytext;
 	char *variable, *p, var[10];
 	struct Typetable *temp;
 	int i, lineno = 1;
+#line 562 "lex.yy.c"
 #line 563 "lex.yy.c"
-#line 564 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -780,7 +780,7 @@ YY_DECL
 #line 15 "abstree.l"
 
 
-#line 784 "lex.yy.c"
+#line 783 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1175,7 +1175,7 @@ YY_RULE_SETUP
 #line 117 "abstree.l"
 ECHO;
 	YY_BREAK
-#line 1179 "lex.yy.c"
+#line 1178 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

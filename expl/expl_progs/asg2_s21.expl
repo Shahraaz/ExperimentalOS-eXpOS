@@ -1,0 +1,31 @@
+int main()
+{
+	decl
+		int tmp1,tmp2,tmp3,ret,x;
+		str msg;
+	enddecl
+	begin
+		tmp1 = exposcall("Fork");
+		if(tmp1<0) then
+			msg = "fork1NotSucc";
+			ret = exposcall("Write",-2,msg);
+		else
+			tmp2 = exposcall("Fork");
+			if(tmp2<0) then
+				msg = "fork2NotSucc";
+				ret = exposcall("Write",-2,msg);
+			else
+				tmp3 = exposcall("Fork");
+				if(tmp3<0) then
+					msg = "fork3NotSucc";
+					ret = exposcall("Write",-2,msg);
+				else
+					x = exposcall("Exec","pid.xsm");
+					//ret = exposcall("Write",-2,x);
+				endif;	
+			endif;
+		endif;
+
+		return 0;
+	end
+} 

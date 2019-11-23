@@ -27,6 +27,24 @@ if(R1 == EXIT_PROCESS) then	// exit process
 	restore;
 	[PROCESS_TABLE+R2*16+4] = TERMINATED;
 	//print(R2);
+    
+    backup;
+	if([PROCESS_TABLE+R2*16+9]!=9) then
+		alias i R4;
+		i = 0;
+		while(i<16) do
+			if([PROCESS_TABLE+i*16+4] == WAIT_PROCESS && [PROCESS_TABLE+i*16+5] == R2) then
+				[PROCESS_TABLE+i*16+4] = READY;
+			endif;
+
+			if([PROCESS_TABLE+i*16+2] == R2) then
+				[PROCESS_TABLE+i*16+2] = -1;	
+			endif;
+			i = i + 1;
+		endwhile;
+	endif;
+    restore;
+    
 	return;
 endif;
 
