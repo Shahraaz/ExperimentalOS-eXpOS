@@ -1,11 +1,31 @@
 
 if(R1 == FREE_USER_AREA_PAGE) then	// free user area page
 	//get the user area page using PID
+
+    backup;
+    alias i R5;
+    i = 496;
+    alias user_area_page R6;
+    user_area_page = [PROCESS_TABLE+R2*16 + 11];
+    while (i<512) do
+        if([user_area_page*512 + i] == 2) then
+            backup;
+            R1 = RELEASE_SEMAPHORE;
+            R3 = R2;
+            R2 = [user_area_page*512 + i + 1];
+            call MOD_0;
+            restore;
+        endif;
+        i = i + 2;
+    endwhile;
+    restore;
+
 	backup;
 	R1 = RELEASE_PAGE;
 	R2 = [PROCESS_TABLE + R2*16 + 11]; //user area page
 	call MOD_2;
 	restore;
+
 	return;
 endif;
 
@@ -54,6 +74,12 @@ if(R1 == FREE_PAGE_TABLE) then	// free page table
 	alias pid R4;
 	i = 4;
 	pid = R2;
+	
+    //invalidate the page table entries for the library without releasing
+	[PAGE_TABLE_BASE+20*pid+0] = -1;
+	[PAGE_TABLE_BASE+20*pid+1] = "0000";
+	[PAGE_TABLE_BASE+20*pid+2] = -1;
+	[PAGE_TABLE_BASE+20*pid+3] = "0000";
 	
 	while(i<20) do
 		if([PAGE_TABLE_BASE + 20*pid + i] != -1) then
