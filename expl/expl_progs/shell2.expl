@@ -28,7 +28,7 @@ begin
             endif;
         else
             temp = exposcall("Shutdown");
-            break;
+            write("Fuck");
         endif;
     endwhile;
     return 0;

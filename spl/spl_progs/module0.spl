@@ -82,4 +82,45 @@ if(funcNum == RELEASE_SEMAPHORE) then
     return;
 endif;
 
+if(funcNum == ACQUIRE_INODE) then
+    alias curr_pid R2; 
+    alias inode_index R3;
+    while ([FILE_STATUS_TABLE + 4 * inode_index + 0] != -1) do
+        [PROCESS_TABLE + 16*curr_pid + 4] = WAIT_FILE;
+        [PROCESS_TABLE + 16*curr_pid + 5] = inode_index;
+        backup;
+        call MOD_5;
+        restore;
+    endwhile;
+    if([INODE_TABLE + inode_index*16 + 1] == -1) then
+        R0 = -1;
+        return;
+    endif;
+    [FILE_STATUS_TABLE + 4*inode_index + 0] = curr_pid;
+    R0 = 0;
+    return;
+endif;
+
+if(funcNum == RELEASE_INODE) then
+    alias curr_pid R2;
+    alias inode_index R3;
+    if([FILE_STATUS_TABLE + 4*inode_index + 0] != curr_pid) then
+        R0 = -1;
+        return;
+    endif;
+    [FILE_STATUS_TABLE + 4*inode_index + 0] = -1;
+    backup;
+    alias i R4;
+    i = 0;
+    while (i < 16) do
+        if([PROCESS_TABLE + i*16 + 4] == WAIT_FILE && [PROCESS_TABLE + i*16 + 5] == inode_index) then
+            [PROCESS_TABLE + i*16 + 4] = READY;
+        endif;
+        i = i + 1;
+    endwhile;
+    restore;
+    R0 = 0;
+    return;
+endif;
+
 return;

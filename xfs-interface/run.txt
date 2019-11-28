@@ -9,12 +9,15 @@ load --exec $HOME/myexpos/expl/expl_progs/par_s22.xsm
 load --exec $HOME/myexpos/expl/expl_progs/MS1.xsm
 load --exec $HOME/myexpos/expl/expl_progs/MS2.xsm
 load --exec $HOME/myexpos/expl/expl_progs/readWri.xsm
+load --exec $HOME/myexpos/expl/expl_progs/delete.xsm
+load --exec $HOME/myexpos/expl/expl_progs/create.xsm
 load --exhandler $HOME/myexpos/spl/spl_progs/exceptionHandler.xsm
 load --library $HOME/myexpos/expl/library.lib
 load --idle $HOME/myexpos/expl/expl_progs/idle.xsm
 load --int=timer $HOME/myexpos/spl/spl_progs/sampleTimer.xsm
 load --int=console $HOME/myexpos/spl/spl_progs/console_interrupt.xsm
 load --int=disk $HOME/myexpos/spl/spl_progs/disk_interrupt.xsm
+load --int=4 $HOME/myexpos/spl/spl_progs/int4.xsm
 load --int=6 $HOME/myexpos/spl/spl_progs/int6.xsm
 load --int=7 $HOME/myexpos/spl/spl_progs/int7.xsm
 load --int=8 $HOME/myexpos/spl/spl_progs/int8.xsm
@@ -30,4 +33,4 @@ load --module 1 $HOME/myexpos/spl/spl_progs/module1.xsm
 load --module 2 $HOME/myexpos/spl/spl_progs/module2.xsm
 load --module 4 $HOME/myexpos/spl/spl_progs/module4.xsm
 load --module 5 $HOME/myexpos/spl/spl_progs/module5.xsm
-load --module 7 $HOME/myexpos/spl/spl_progs/module7.xsm 
+load --module 7 $HOME/myexpos/spl/spl_progs/module7.xsm

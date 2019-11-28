@@ -1,0 +1,241 @@
+//create and delete sys calls are executed in INT4 having sys call nos 1 and 4
+
+[PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1] * 16 + 13] = SP;
+alias userSP R1;
+userSP = SP;
+
+SP = [PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1] * 16 + 11] * 512 - 1;	//change to kernel stack
+
+alias syscall R2;
+syscall = [[PTBR + 2 * ((userSP - 5) / 512)] * 512 + (userSP - 5) % 512];
+
+alias ret_addr R10;
+ret_addr = [PTBR + 2 * ((userSP - 1) / 512)] * 512 + (userSP - 1) % 512;
+
+alias protable R11;
+protable = PROCESS_TABLE + [SYSTEM_STATUS_TABLE + 1] * 16; 
+
+//-----------------------------------------CREATE---------------------------------------------------
+//arguments are filename,permission(0 or 1)
+//return 0 if success or filename already present
+//return -1 if no free inode table entry found
+if (syscall == 1) then
+	[protable + 9] = 1;	//set the mode flag
+	
+	//get the filename and permission
+	alias fileName R3;
+	alias permission R4;
+	fileName = [[PTBR + 2 * ((userSP - 4) / 512)] * 512 + (userSP - 4) % 512];
+	permission = [[PTBR + 2 * ((userSP - 3) / 512)] * 512 + (userSP - 3) % 512];
+
+	//iterate through the inode table entries to find a free entry
+	//It consists of MAX_FILE_NUM entries
+	//Each Inode table entry consists of 16 words of which 7 are unused
+	//An unused entry is indicated by -1 in the FILE NAME field(2nd field in an entry) 
+	alias i R5;
+	i = 0;
+
+	//first checking if file is already present
+	while(i<MAX_FILE_NUM) do
+		if([INODE_TABLE + i*16 + 1] == fileName) then
+			[protable + 9] = 0;	//reset the mode
+			[ret_addr] = 0;	//already present
+			SP = [protable + 13];	//change to user stack
+			ireturn; 
+		endif;
+		i = i + 1;
+	endwhile;
+
+    print "okFileNotPre";
+
+	//file is not present
+	alias free_entry R6;
+	free_entry = -1;
+
+	i = 0;
+	while(i<MAX_FILE_NUM) do
+		if([INODE_TABLE + i*16 + 1] == -1) then	//free entry found
+			free_entry = i;
+			break;
+		endif;
+		i = i + 1;
+	endwhile;
+
+    print "free_entry";
+    print free_entry;
+
+	if(free_entry == -1) then	//no free entry present
+		[protable + 9] = 0;	//reset the mode
+		[ret_addr] = -1;	//no free entry
+		SP = [protable + 13];	//change to user stack
+
+		ireturn;
+	endif;
+
+	//Free entry is present
+	//update the inode table and root file entries
+	alias userID R7;
+	userID = [protable + 3];
+	[INODE_TABLE + free_entry*16 + 1] = fileName;
+	[INODE_TABLE + free_entry*16 + 2] = 0;	//file size
+	[INODE_TABLE + free_entry*16 + 0] = DATA;	//file type
+	[INODE_TABLE + free_entry*16 + 3] = userID;//USERID same as process's userID
+	[INODE_TABLE + free_entry*16 + 4] = permission;	//permission field
+
+	//now update the root table file entries
+	//Each Root File entry consists of 8 words
+	//index of the inode table entry of a file and the index of its root file entry must match
+	[ROOT_FILE + free_entry*8 + 0] = fileName;	//file name field
+	[ROOT_FILE + free_entry*8 + 1] = 0;	//file size
+	[ROOT_FILE + free_entry*8 + 2] = DATA;
+	//set the username from USER_TABLE. Each User table entry consists of 2 words
+	//userid assigned to a user is the index of the corresp. entry in the user table
+	[ROOT_FILE + free_entry*8 + 3] = [USER_TABLE + userID*2 + 0];	//username field from user table
+	[ROOT_FILE + free_entry*8 + 4] = permission;
+
+	[protable + 9] = 0;	//reset the mode
+	[ret_addr] = 0;	//success
+	SP = [protable + 13];	//change to user stack
+
+    print "Success";
+
+	ireturn;
+endif;
+//--------------------------------------------------------------------------------------------------
+
+//-----------------------------------------DELETE---------------------------------------------------
+//argument is a file name
+//return 0 if success or file name does not exist
+//return -1 if permission denied(file to be deleted does not belong to current user & has exclusive permissions)
+//return -2 if file is open
+
+if (syscall == 4) then
+		[protable + 9] = 4;	//set the mode flag
+
+		//get the filename to be deleted
+		alias fileName R3;
+		fileName = [[PTBR + 2 * ((userSP - 4) / 512)] * 512 + (userSP - 4) % 512];
+
+		alias idx R4;
+		alias i R5;
+		idx = -1;
+		i = 0;
+
+		//iterate through the inode table entries
+		while(i<MAX_FILE_NUM) do
+			if([INODE_TABLE + 16*i + 1] == fileName) then
+				idx = i;
+				break;
+			endif;
+			i = i + 1;
+		endwhile;
+
+		//if file is not present return 0
+		if(idx == -1) then
+			[protable + 9] = 0;	//reset the mode
+			[ret_addr] = 0;	//success
+			SP = [protable + 13];	//change to user stack
+
+			ireturn;		
+		endif;	
+
+        print "here";
+
+		//if it is not a data file
+		if([INODE_TABLE + 16*idx + 0] != DATA) then
+			[protable + 9] = 0;	//reset the mode
+			[ret_addr] = -1;	//not a data file
+			SP = [protable + 13];	//change to user stack
+			ireturn;
+		endif;
+
+        print "here";
+
+		//check if current user is allowed to delete the file
+		alias curr_userID R6;
+		curr_userID = [protable + 3];
+		if([INODE_TABLE + 16*idx + 4] == 0)	then//if exclusive permission is set
+			if([INODE_TABLE + 16*idx + 3] != curr_userID && curr_userID != 1) then
+				[protable + 9] = 0;	//reset the mode
+				[ret_addr] = -1;//no permission
+				SP = [protable + 13];	//change to user stack
+
+				ireturn;	
+			endif;
+		endif;
+
+		//user is allowed to delete the file
+		//Acquire Inode and Release Inode ​fns.of ​Resource Manager Module handle file access(locking).
+		//with the help of file status table the locking can be done
+		//each entry in file status table is of 4 words
+		//index of a file’s Inode table entry and file status table entry will be the same.
+		multipush(R1,R2,R3);	
+		R1 = ACQUIRE_INODE;
+		R2 = [SYSTEM_STATUS_TABLE + 1];
+		R3 = idx;	//inode index
+		call MOD_0;
+		multipop(R1,R2,R3);
+
+		//check the file status table if any process is using the file
+		if([FILE_STATUS_TABLE + 4*idx + 1] != -1) then	//some process has opened the file
+			//release the lock and return -2
+			multipush(R1,R2,R3);	
+			R1 = RELEASE_INODE;
+			R2 = [SYSTEM_STATUS_TABLE + 1];
+			R3 = idx;	//inode index
+			call MOD_0;
+			multipop(R1,R2,R3);	
+
+			[protable + 9] = 0;	//reset the mode
+			[ret_addr] = -2;//file is in use
+			SP = [protable + 13];	//change to user stack
+
+			ireturn;
+
+		endif;
+
+		//If any of the disk blocks of deleted file are in buffer cache, and if buffer page is marked dirty,
+		//dirty bit needs to be set to 0 so that it does not write back into the disk
+		//check for the blocks in inode table entry
+		alias block_num R8;
+		i = 0;
+		while(i<4) do
+			block_num = [INODE_TABLE + 16*idx + 8 + i]; 
+			if(block_num != -1) then	//if block is present in buffer table and dirty bit is set
+				if([BUFFER_TABLE + 4*(i%4) + 0] == block_num && [BUFFER_TABLE + 4*(i%4) + 1] == 1) then
+					[BUFFER_TABLE + 4*(i%4) + 1] = 0;
+				endif;
+
+				backup;
+				R1 = RELEASE_BLOCK;	//free the block
+				R2 = block_num;
+				R3 = [SYSTEM_STATUS_TABLE+1];
+				call MOD_2;
+				restore;
+			endif;
+			i = i + 1;
+		endwhile;
+
+		[INODE_TABLE + 16*idx + 1] = -1;	//invalidate the inode table of the file
+		[ROOT_FILE + 8*idx + 0] = -1;	//invalidate the root file entry
+
+		backup;
+		R1 = RELEASE_INODE;	//unlock the file for other processes
+		R2 = [SYSTEM_STATUS_TABLE + 1];
+		R3 = idx;
+		call MOD_0;
+		restore;
+
+		[ret_addr] = 0;	//successful deletion
+		[protable + 9] = 0;	//reset the mode
+		SP = [protable + 13];	//change to user stack
+
+		ireturn;
+		//Open file table is not updated when a file is deleted
+		//Open File Table stores the information about all the files that are open while the OS is running.
+		//We only delete the files which are not opened when it is being deleted
+		//hence the file does not have an entry in open file table	
+endif;
+//--------------------------------------------------------------------------------------------------
+SP = [protable + 13];	//change to user stack
+ireturn;
